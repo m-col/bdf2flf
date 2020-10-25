@@ -16,10 +16,14 @@ void bdf2flf(FILE * in, FILE * out)
     char *s;
     int widest = 0;
     int comments = 2;
-    int chars, height, baseline, old_layout, direction, full_layout, codetags,
-	fbb_width, fbb_height, fbb_yoffset;
+    int baseline, old_layout, direction, full_layout, codetags;
     char font[1024];
     char copyright[1024];
+    int chars = 0;
+    int height = 0;
+    int fbb_width = 0;
+    int fbb_height = 0;
+    int fbb_yoffset = 0;
 
     for (;;) {
 	if (!fgets(linebuf, sizeof(linebuf), in)) {	// EOF
@@ -47,6 +51,12 @@ void bdf2flf(FILE * in, FILE * out)
 	}
     }
 
+    // exit if data could not be read completely
+    if (chars <= 0 || fbb_width <= 0 || fbb_height <= 0 || height <= 0) {
+	fprintf(stderr, "Could not extract BDF data. Is the input a BDF file?\n");
+	exit(EXIT_FAILURE);
+    }
+
     // output header
     fprintf(out, "flf2a$ %i %i %i %i %i %i %i %i\n", height, baseline, widest+2,
 	    old_layout, comments, direction, full_layout, codetags);
@@ -54,6 +64,7 @@ void bdf2flf(FILE * in, FILE * out)
     if (comments > 2)
 	fprintf(out, "which has copyright: %s\n", copyright);
     fprintf(out, "Converted to flf with bdf2flf (c) Matt Colligan.\n");
+
 }
 
 
