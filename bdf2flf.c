@@ -173,6 +173,7 @@ void bdf2flf(FILE * in, FILE * out)
     // print required characters first
     n = 0;
     j = &REQUIRED[0];
+    i = 0;
     for (;;) {
 	if (chars[n].encoding == *j) {
 	    strncpy(bitmap, chars[n].bitmap, ((width + 7) / 8) * height * 2);
@@ -181,10 +182,14 @@ void bdf2flf(FILE * in, FILE * out)
 	    if (*j == 223)
 		break;
 	    j++;
+	    i = 0;
 	}
 	n++;
+	i++;
 	if (n == num_chars)
 	    n = 0;
+	if (i == num_chars)
+	    break;
     }
 
     // print additional characters second
