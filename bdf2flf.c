@@ -132,7 +132,8 @@ void bdf2flf(FILE * in, FILE * out)
 	die("Could not allocate memory.\n");
 
     // extract individual char data
-    for (;;) { if (!fgets(linebuf, sizeof(linebuf), in))
+    for (;;) {
+	if (!fgets(linebuf, sizeof(linebuf), in))
 	    break;
 	if (!(s = strtok(linebuf, " \t\n\r")))
 	    continue;
@@ -145,7 +146,7 @@ void bdf2flf(FILE * in, FILE * out)
 		die("bdf font has incorrect CHARS value.\n");
 	    i = 0;
 	    chars[n].printed = 0;
-	    chars[n].bitmap = malloc(1);
+	    chars[n].bitmap = malloc((width + 7) / 8 * height * 2);
 	    chars[n].bitmap[0] = '\0';
 	    for (;;) {
 		fgets(linebuf, sizeof(linebuf), in);
@@ -204,7 +205,7 @@ int main(int argc, char *argv[])
 		" and figlet font data is output to stdout.\n");
 	exit(EXIT_SUCCESS);
     }
-    
+
     bdf2flf(stdin, stdout);
 
     (void)(argv);  // shush the compiler
